@@ -1,0 +1,49 @@
+version: '3.4'
+services:
+  etl:
+    build:
+      context: ../
+      dockerfile: object-storage/Dockerfile
+    environment:
+      AWS_S3_ENDPOINT_URL: http://minio:9000
+      AWS_ACCESS_KEY_ID: sr_dev
+      AWS_SECRET_ACCESS_KEY: sr_dev_pass
+      AWS_S3_REGION_NAME: us-east-1
+      AWS_S3_BUCKET: stakingrewards
+    depends_on:
+      minio-create-bucket:
+        condition: service_completed_successfully
+
+  minio:
+    image: minio/minio:RELEASE.2021-10-27T16-29-42Z
+    ports:
+      - "9000:9000"
+      - "8060:8060"
+    environment:
+      MINIO_ROOT_USER: root_user
+      MINIO_ROOT_PASSWORD: root_user_password
+      MINIO_ACCESS_KEY: sr_dev
+      MINIO_SECRET_KEY: sr_dev_pass
+    command: server /data --console-address ":8060"
+    healthcheck:
+      test: ["CMD", "curl", "-I", "http://localhost:9000/minio/health/live"]
+      interval: 2s
+      timeout: 0s
+      retries: 5
+      start_period: 2s
+
+  minio-create-bucket:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set myminio http://minio:9000 root_user root_user_password;
+      /usr/bin/mc admin info myminio;
+      /usr/bin/mc mb myminio/stakingrewards;
+      /usr/bin/mc policy set download myminio/stakingrewards;
+      /usr/bin/mc admin user add myminio sr_dev sr_dev_pass;
+      /usr/bin/mc admin policy set myminio readwrite user=sr_dev;
+      exit 0;
+      "
