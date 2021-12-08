@@ -7,7 +7,6 @@ import pandas as pd
 from s3fs.core import S3FileSystem
 
 
-
 def main():
     """Main ETL script definition."""
     df = load_data_locally("data/*.csv")

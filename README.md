@@ -17,12 +17,16 @@ make [implementation]
 ## List of Implementations
 
 - [object-storage](object-storage/main.py)
-- [postgresql](postgresql/main.py)
 - [spark](spark/main.py)
 - dbt (soon)
 - airflow (soon)
-- prefect (soon)
-- BigQuery (soon)
+
+# Example
+
+```
+make spark
+```
+Will run a etl job through a containzerized spark cluster and put the result on minio. After the etl job is finished running on spark, the result can be seen in the minio console at http://127.0.0.1:8060/buckets/example/browse (user: dev & password: dev_pass)
 
 # Inspiration
 
