@@ -18,6 +18,7 @@ make [implementation]
 
 - [object-storage](object-storage/main.py)
 - [spark](spark/main.py)
+- [prefect](prefect/main.py)
 - dbt (soon)
 - airflow (soon)
 
