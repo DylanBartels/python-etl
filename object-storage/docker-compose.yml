@@ -9,7 +9,7 @@ services:
       AWS_ACCESS_KEY_ID: dev
       AWS_SECRET_ACCESS_KEY: dev_pass
       AWS_S3_REGION_NAME: us-east-1
-      AWS_S3_BUCKET: bucket_name
+      AWS_S3_BUCKET: example
     depends_on:
       minio-create-bucket:
         condition: service_completed_successfully
@@ -41,8 +41,8 @@ services:
       /bin/sh -c "
       /usr/bin/mc alias set myminio http://minio:9000 root_user root_user_password;
       /usr/bin/mc admin info myminio;
-      /usr/bin/mc mb myminio/bucket_name;
-      /usr/bin/mc policy set download myminio/bucket_name;
+      /usr/bin/mc mb myminio/example;
+      /usr/bin/mc policy set download myminio/example;
       /usr/bin/mc admin user add myminio dev dev_pass;
       /usr/bin/mc admin policy set myminio readwrite user=dev;
       exit 0;
